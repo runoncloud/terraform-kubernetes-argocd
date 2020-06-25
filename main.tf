@@ -5,17 +5,16 @@
 #     - https://github.com/banzaicloud/terraform-provider-k8s
 # ----------------------------------------------------------------------------------------------------------------------
 terraform {
-  required_version = ">= 0.12.0"
+  required_version = ">= 0.12.24"
   required_providers {
     kubernetes = ">= 1.11.0"
-    k8s        = ">= 0.7.6"
   }
 }
 
 # ----------------------------------------------------------------------------------------------------------------------
 # Namespaces
 # ----------------------------------------------------------------------------------------------------------------------
-resource "kubernetes_namespace" "this" {
+resource "kubernetes_namespace" "argo" {
   metadata {
     name = var.namespace
   }
@@ -25,15 +24,15 @@ resource "kubernetes_namespace" "this" {
 # CRDs
 # ----------------------------------------------------------------------------------------------------------------------
 data "template_file" "crd_argo_application" {
-  template = file("manifests/${var.version}/crds/argo-application-crd.yaml")
+  template = file("manifests/${var.argo_cd_version}/crds/argo-application-crd.yml")
 }
 
-resource "k8s_manifest" "nginx-crd_argo_application" {
+resource "k8s_manifest" "crd_argo_application" {
   content = data.template_file.crd_argo_application.rendered
 }
 
 data "template_file" "crd_argo_project" {
-  template = file("manifests/${var.version}/crds/argo-project-crd.yaml")
+  template = file("manifests/${var.argo_cd_version}/crds/argo-project-crd.yml")
 }
 
 resource "k8s_manifest" "crd_argo_project" {
@@ -44,7 +43,7 @@ resource "k8s_manifest" "crd_argo_project" {
 # Cluster Roles
 # ----------------------------------------------------------------------------------------------------------------------
 data "template_file" "cluster_role_argocd_application_controller" {
-  template = file("manifests/${var.version}/cluster-role/argocd-application-controller.yaml")
+  template = file("manifests/${var.argo_cd_version}/cluster-roles/argocd-application-controller.yml")
 }
 
 resource "k8s_manifest" "cluster_role_argocd_application_controller" {
@@ -52,7 +51,7 @@ resource "k8s_manifest" "cluster_role_argocd_application_controller" {
 }
 
 data "template_file" "cluster_role_argocd_server" {
-  template = file("manifests/${var.version}/cluster-role/argocd-server.yaml")
+  template = file("manifests/${var.argo_cd_version}/cluster-roles/argocd-server.yml")
 }
 
 resource "k8s_manifest" "cluster_role_argocd_server" {
@@ -63,7 +62,7 @@ resource "k8s_manifest" "cluster_role_argocd_server" {
 # Cluster Role Bindings
 # ----------------------------------------------------------------------------------------------------------------------
 data "template_file" "cluster_role_binding_argocd_application_controller" {
-  template = file("manifests/${var.version}/cluster-role-bindings/argocd-application-controller.yaml")
+  template = file("manifests/${var.argo_cd_version}/cluster-role-bindings/argocd-application-controller.yml")
 }
 
 resource "k8s_manifest" "cluster_role_binding_argocd_application_controller" {
@@ -71,7 +70,7 @@ resource "k8s_manifest" "cluster_role_binding_argocd_application_controller" {
 }
 
 data "template_file" "cluster_role_binding_argocd_server" {
-  template = file("manifests/${var.version}/cluster-role-bindings/argocd-server.yaml")
+  template = file("manifests/${var.argo_cd_version}/cluster-role-bindings/argocd-server.yml")
 }
 
 resource "k8s_manifest" "cluster_role_binding_argocd_server" {
@@ -82,244 +81,269 @@ resource "k8s_manifest" "cluster_role_binding_argocd_server" {
 # Roles
 # ----------------------------------------------------------------------------------------------------------------------
 data "template_file" "role_argocd_application_controller" {
-  template = file("manifests/${var.version}/roles/argocd-application-controller.yaml")
+  template = file("manifests/${var.argo_cd_version}/roles/argocd-application-controller.yml")
 }
 
 resource "k8s_manifest" "role_argocd_application_controller" {
-  content   = data.template_file.role_argocd_application_controller.rendered
-  namespace = var.namespace
+  content    = data.template_file.role_argocd_application_controller.rendered
+  namespace  = var.namespace
+  depends_on = [kubernetes_namespace.argo]
 }
 
 data "template_file" "role_argocd_dex_server" {
-  template = file("manifests/${var.version}/roles/argocd-dex-server.yaml")
+  template = file("manifests/${var.argo_cd_version}/roles/argocd-dex-server.yml")
 }
 
 resource "k8s_manifest" "role_argocd_dex_server" {
-  content   = data.template_file.role_argocd_dex_server.rendered
-  namespace = var.namespace
+  content    = data.template_file.role_argocd_dex_server.rendered
+  namespace  = var.namespace
+  depends_on = [kubernetes_namespace.argo]
 }
 
 data "template_file" "role_server_role" {
-  template = file("manifests/${var.version}/roles/server-role.yaml")
+  template = file("manifests/${var.argo_cd_version}/roles/server-role.yml")
 }
 
 resource "k8s_manifest" "role_server_role" {
-  content   = data.template_file.role_server_role.rendered
-  namespace = var.namespace
+  content    = data.template_file.role_server_role.rendered
+  namespace  = var.namespace
+  depends_on = [kubernetes_namespace.argo]
 }
 
 # ----------------------------------------------------------------------------------------------------------------------
 # Role Bindings
 # ----------------------------------------------------------------------------------------------------------------------
 data "template_file" "role_binding_argocd_application_controller" {
-  template = file("manifests/${var.version}/role-bindings/argocd-application-controller.yaml")
+  template = file("manifests/${var.argo_cd_version}/role-bindings/argocd-application-controller.yml")
 }
 
 resource "k8s_manifest" "role_binding_argocd_application_controller" {
-  content   = data.template_file.role_binding_argocd_application_controller.rendered
-  namespace = var.namespace
+  content    = data.template_file.role_binding_argocd_application_controller.rendered
+  namespace  = var.namespace
+  depends_on = [kubernetes_namespace.argo]
 }
 
 data "template_file" "role_binding_argocd_dex_server" {
-  template = file("manifests/${var.version}/role-bindings/argocd-dex-server.yaml")
+  template = file("manifests/${var.argo_cd_version}/role-bindings/argocd-dex-server.yml")
 }
 
 resource "k8s_manifest" "role_binding_argocd_dex_server" {
-  content   = data.template_file.role_binding_argocd_dex_server.rendered
-  namespace = var.namespace
+  content    = data.template_file.role_binding_argocd_dex_server.rendered
+  namespace  = var.namespace
+  depends_on = [kubernetes_namespace.argo]
 }
 
 data "template_file" "role_binding_argocd_server" {
-  template = file("manifests/${var.version}/role-bindings/argocd-server.yaml")
+  template = file("manifests/${var.argo_cd_version}/role-bindings/argocd-server.yml")
 }
 
 resource "k8s_manifest" "role_binding_argocd_server" {
-  content   = data.template_file.role_binding_argocd_server.rendered
-  namespace = var.namespace
+  content    = data.template_file.role_binding_argocd_server.rendered
+  namespace  = var.namespace
+  depends_on = [kubernetes_namespace.argo]
 }
 
 # ----------------------------------------------------------------------------------------------------------------------
 # Service Accounts
 # ----------------------------------------------------------------------------------------------------------------------
 data "template_file" "service_account_argocd_application_controller" {
-  template = file("manifests/${var.version}/service-accounts/argocd-application-controller.yaml")
+  template = file("manifests/${var.argo_cd_version}/service-accounts/argocd-application-controller.yml")
 }
 
 resource "k8s_manifest" "service_account_argocd_application_controller" {
-  content   = data.template_file.service_account_argocd_application_controller.rendered
-  namespace = var.namespace
+  content    = data.template_file.service_account_argocd_application_controller.rendered
+  namespace  = var.namespace
+  depends_on = [kubernetes_namespace.argo]
 }
 
 data "template_file" "service_account_argocd_dex_server" {
-  template = file("manifests/${var.version}/service-accounts/argocd-dex-server.yaml")
+  template = file("manifests/${var.argo_cd_version}/service-accounts/argocd-dex-server.yml")
 }
 
 resource "k8s_manifest" "service_account_argocd_dex_server" {
-  content   = data.template_file.service_account_argocd_dex_server.rendered
-  namespace = var.namespace
+  content    = data.template_file.service_account_argocd_dex_server.rendered
+  namespace  = var.namespace
+  depends_on = [kubernetes_namespace.argo]
 }
 
 data "template_file" "service_account_argocd_server" {
-  template = file("manifests/${var.version}/service-accounts/argocd-server.yaml")
+  template = file("manifests/${var.argo_cd_version}/service-accounts/argocd-server.yml")
 }
 
 resource "k8s_manifest" "service_account_argocd_server" {
-  content   = data.template_file.service_account_argocd_server.rendered
-  namespace = var.namespace
+  content    = data.template_file.service_account_argocd_server.rendered
+  namespace  = var.namespace
+  depends_on = [kubernetes_namespace.argo]
 }
 
 # ----------------------------------------------------------------------------------------------------------------------
 # ConfigMaps
 # ----------------------------------------------------------------------------------------------------------------------
 data "template_file" "configmap_argocd_cm" {
-  template = file("manifests/${var.version}/configmaps/argocd-cm.yaml")
+  template = file("manifests/${var.argo_cd_version}/configmaps/argocd-cm.yml")
 }
 
 resource "k8s_manifest" "configmap_argocd_cm" {
-  content   = data.template_file.configmap_argocd_cm.rendered
-  namespace = var.namespace
+  content    = data.template_file.configmap_argocd_cm.rendered
+  namespace  = var.namespace
+  depends_on = [kubernetes_namespace.argo]
 }
 
 data "template_file" "configmap_argocd_rbac_cm" {
-  template = file("manifests/${var.version}/configmaps/argocd-rbac-cm.yaml")
+  template = file("manifests/${var.argo_cd_version}/configmaps/argocd-rbac-cm.yml")
 }
 
 resource "k8s_manifest" "configmap_argocd_rbac_cm" {
-  content   = data.template_file.configmap_argocd_rbac_cm.rendered
-  namespace = var.namespace
+  content    = data.template_file.configmap_argocd_rbac_cm.rendered
+  namespace  = var.namespace
+  depends_on = [kubernetes_namespace.argo]
 }
 
 data "template_file" "configmap_argocd_ssh_known_hosts_cm" {
-  template = file("manifests/${var.version}/configmaps/argocd-ssh-known-hosts-cm.yaml")
+  template = file("manifests/${var.argo_cd_version}/configmaps/argocd-ssh-known-hosts-cm.yml")
 }
 
 resource "k8s_manifest" "configmap_argocd_ssh_known_hosts_cm" {
-  content   = data.template_file.configmap_argocd_ssh_known_hosts_cm.rendered
-  namespace = var.namespace
+  content    = data.template_file.configmap_argocd_ssh_known_hosts_cm.rendered
+  namespace  = var.namespace
+  depends_on = [kubernetes_namespace.argo]
 }
 
 data "template_file" "configmap_argocd_tls_certs_cm" {
-  template = file("manifests/${var.version}/configmaps/argocd-tls-certs-cm.yaml")
+  template = file("manifests/${var.argo_cd_version}/configmaps/argocd-tls-certs-cm.yml")
 }
 
 resource "k8s_manifest" "configmap_argocd_tls_certs_cm" {
-  content   = data.template_file.configmap_argocd_tls_certs_cm.rendered
-  namespace = var.namespace
+  content    = data.template_file.configmap_argocd_tls_certs_cm.rendered
+  namespace  = var.namespace
+  depends_on = [kubernetes_namespace.argo]
 }
 
 # ----------------------------------------------------------------------------------------------------------------------
 # Secrets
 # ----------------------------------------------------------------------------------------------------------------------
 data "template_file" "secret_argocd_server" {
-  template = file("manifests/${var.version}/secrets/argocd-server.yaml")
+  template = file("manifests/${var.argo_cd_version}/secrets/argocd-server.yml")
 }
 
 resource "k8s_manifest" "secret_argocd_server" {
-  content   = data.template_file.secret_argocd_server.rendered
-  namespace = var.namespace
+  content    = data.template_file.secret_argocd_server.rendered
+  namespace  = var.namespace
+  depends_on = [kubernetes_namespace.argo]
 }
 
 # ----------------------------------------------------------------------------------------------------------------------
 # Deployments
 # ----------------------------------------------------------------------------------------------------------------------
-data "template_file" "secret_argocd_application_controller" {
-  template = file("manifests/${var.version}/deployments/argocd-application-controller.yaml")
+data "template_file" "deployment_argocd_application_controller" {
+  template = file("manifests/${var.argo_cd_version}/deployments/argocd-application-controller.yml")
 }
 
-resource "k8s_manifest" "secret_argocd_application_controller" {
-  content   = data.template_file.secret_argocd_application_controller.rendered
-  namespace = var.namespace
+resource "k8s_manifest" "deployment_argocd_application_controller" {
+  content    = data.template_file.deployment_argocd_application_controller.rendered
+  namespace  = var.namespace
+  depends_on = [kubernetes_namespace.argo]
 }
 
-data "template_file" "secret_argocd_dex_server" {
-  template = file("manifests/${var.version}/deployments/argocd-dex-server.yaml")
+data "template_file" "deployment_argocd_dex_server" {
+  template = file("manifests/${var.argo_cd_version}/deployments/argocd-dex-server.yml")
 }
 
-resource "k8s_manifest" "secret_argocd_dex_server" {
-  content   = data.template_file.secret_argocd_dex_server.rendered
-  namespace = var.namespace
+resource "k8s_manifest" "deployment_argocd_dex_server" {
+  content    = data.template_file.deployment_argocd_dex_server.rendered
+  namespace  = var.namespace
+  depends_on = [kubernetes_namespace.argo]
 }
 
-data "template_file" "secret_argocd_redis" {
-  template = file("manifests/${var.version}/deployments/argocd-redis.yaml")
+data "template_file" "deployment_argocd_redis" {
+  template = file("manifests/${var.argo_cd_version}/deployments/argocd-redis.yml")
 }
 
-resource "k8s_manifest" "secret_argocd_redis" {
-  content   = data.template_file.secret_argocd_redis.rendered
-  namespace = var.namespace
+resource "k8s_manifest" "deployment_argocd_redis" {
+  content    = data.template_file.deployment_argocd_redis.rendered
+  namespace  = var.namespace
+  depends_on = [kubernetes_namespace.argo]
 }
 
-data "template_file" "secret_argocd_repo_server" {
-  template = file("manifests/${var.version}/deployments/argocd-repo-server.yaml")
+data "template_file" "deployment_argocd_repo_server" {
+  template = file("manifests/${var.argo_cd_version}/deployments/argocd-repo-server.yml")
 }
 
-resource "k8s_manifest" "secret_argocd_repo_server" {
-  content   = data.template_file.secret_argocd_repo_server.rendered
-  namespace = var.namespace
+resource "k8s_manifest" "deployment_argocd_repo_server" {
+  content    = data.template_file.deployment_argocd_repo_server.rendered
+  namespace  = var.namespace
+  depends_on = [kubernetes_namespace.argo]
 }
 
-data "template_file" "secret_argocd_server" {
-  template = file("manifests/${var.version}/deployments/argocd-server.yaml")
+data "template_file" "deployment_argocd_server" {
+  template = file("manifests/${var.argo_cd_version}/deployments/argocd-server.yml")
 }
 
-resource "k8s_manifest" "secret_argocd_server" {
-  content   = data.template_file.secret_argocd_server.rendered
-  namespace = var.namespace
+resource "k8s_manifest" "deployment_argocd_server" {
+  content    = data.template_file.deployment_argocd_server.rendered
+  namespace  = var.namespace
+  depends_on = [kubernetes_namespace.argo]
 }
 
 # ----------------------------------------------------------------------------------------------------------------------
 # Services
 # ----------------------------------------------------------------------------------------------------------------------
 data "template_file" "service_argocd_dex_server" {
-  template = file("manifests/${var.version}/services/argocd-dex-server.yaml")
+  template = file("manifests/${var.argo_cd_version}/services/argocd-dex-server.yml")
 }
 
 resource "k8s_manifest" "service_argocd_dex_server" {
-  content   = data.template_file.service_argocd_dex_server.rendered
-  namespace = var.namespace
+  content    = data.template_file.service_argocd_dex_server.rendered
+  namespace  = var.namespace
+  depends_on = [kubernetes_namespace.argo]
 }
 
 data "template_file" "service_argocd_metrics" {
-  template = file("manifests/${var.version}/services/argocd-metrics.yaml")
+  template = file("manifests/${var.argo_cd_version}/services/argocd-metrics.yml")
 }
 
 resource "k8s_manifest" "service_argocd_metrics" {
-  content   = data.template_file.service_argocd_metrics.rendered
-  namespace = var.namespace
+  content    = data.template_file.service_argocd_metrics.rendered
+  namespace  = var.namespace
+  depends_on = [kubernetes_namespace.argo]
 }
 
 data "template_file" "service_argocd_redis" {
-  template = file("manifests/${var.version}/services/argocd-redis.yaml")
+  template = file("manifests/${var.argo_cd_version}/services/argocd-redis.yml")
 }
 
 resource "k8s_manifest" "service_argocd_redis" {
-  content   = data.template_file.service_argocd_redis.rendered
-  namespace = var.namespace
+  content    = data.template_file.service_argocd_redis.rendered
+  namespace  = var.namespace
+  depends_on = [kubernetes_namespace.argo]
 }
 
 data "template_file" "service_argocd_repo_server" {
-  template = file("manifests/${var.version}/services/argocd-repo-server.yaml")
+  template = file("manifests/${var.argo_cd_version}/services/argocd-repo-server.yml")
 }
 
 resource "k8s_manifest" "service_argocd_repo_server" {
-  content   = data.template_file.service_argocd_repo_server.rendered
-  namespace = var.namespace
+  content    = data.template_file.service_argocd_repo_server.rendered
+  namespace  = var.namespace
+  depends_on = [kubernetes_namespace.argo]
 }
 
 data "template_file" "service_argocd_server" {
-  template = file("manifests/${var.version}/services/argocd-server.yaml")
+  template = file("manifests/${var.argo_cd_version}/services/argocd-server.yml")
 }
 
 resource "k8s_manifest" "service_argocd_server" {
-  content   = data.template_file.service_argocd_server.rendered
-  namespace = var.namespace
+  content    = data.template_file.service_argocd_server.rendered
+  namespace  = var.namespace
+  depends_on = [kubernetes_namespace.argo]
 }
 
 data "template_file" "service_argocd_server_metrics" {
-  template = file("manifests/${var.version}/services/argocd-server-metrics.yaml")
+  template = file("manifests/${var.argo_cd_version}/services/argocd-server-metrics.yml")
 }
 
 resource "k8s_manifest" "service_argocd_server_metrics" {
-  content   = data.template_file.service_argocd_server_metrics.rendered
-  namespace = var.namespace
+  content    = data.template_file.service_argocd_server_metrics.rendered
+  namespace  = var.namespace
+  depends_on = [kubernetes_namespace.argo]
 }
