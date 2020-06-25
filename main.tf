@@ -24,7 +24,7 @@ resource "kubernetes_namespace" "argo" {
 # CRDs
 # ----------------------------------------------------------------------------------------------------------------------
 data "template_file" "crd_argo_application" {
-  template = file("manifests/${var.argo_cd_version}/crds/argo-application-crd.yml")
+  template = file("${path.module}/manifests/${var.argo_cd_version}/crds/argo-application-crd.yml")
 }
 
 resource "k8s_manifest" "crd_argo_application" {
@@ -32,7 +32,7 @@ resource "k8s_manifest" "crd_argo_application" {
 }
 
 data "template_file" "crd_argo_project" {
-  template = file("manifests/${var.argo_cd_version}/crds/argo-project-crd.yml")
+  template = file("${path.module}/manifests/${var.argo_cd_version}/crds/argo-project-crd.yml")
 }
 
 resource "k8s_manifest" "crd_argo_project" {
@@ -43,7 +43,7 @@ resource "k8s_manifest" "crd_argo_project" {
 # Cluster Roles
 # ----------------------------------------------------------------------------------------------------------------------
 data "template_file" "cluster_role_argocd_application_controller" {
-  template = file("manifests/${var.argo_cd_version}/cluster-roles/argocd-application-controller.yml")
+  template = file("${path.module}/manifests/${var.argo_cd_version}/cluster-roles/argocd-application-controller.yml")
 }
 
 resource "k8s_manifest" "cluster_role_argocd_application_controller" {
@@ -51,7 +51,7 @@ resource "k8s_manifest" "cluster_role_argocd_application_controller" {
 }
 
 data "template_file" "cluster_role_argocd_server" {
-  template = file("manifests/${var.argo_cd_version}/cluster-roles/argocd-server.yml")
+  template = file("${path.module}/manifests/${var.argo_cd_version}/cluster-roles/argocd-server.yml")
 }
 
 resource "k8s_manifest" "cluster_role_argocd_server" {
@@ -62,7 +62,7 @@ resource "k8s_manifest" "cluster_role_argocd_server" {
 # Cluster Role Bindings
 # ----------------------------------------------------------------------------------------------------------------------
 data "template_file" "cluster_role_binding_argocd_application_controller" {
-  template = file("manifests/${var.argo_cd_version}/cluster-role-bindings/argocd-application-controller.yml")
+  template = file("${path.module}/manifests/${var.argo_cd_version}/cluster-role-bindings/argocd-application-controller.yml")
 }
 
 resource "k8s_manifest" "cluster_role_binding_argocd_application_controller" {
@@ -70,7 +70,7 @@ resource "k8s_manifest" "cluster_role_binding_argocd_application_controller" {
 }
 
 data "template_file" "cluster_role_binding_argocd_server" {
-  template = file("manifests/${var.argo_cd_version}/cluster-role-bindings/argocd-server.yml")
+  template = file("${path.module}/manifests/${var.argo_cd_version}/cluster-role-bindings/argocd-server.yml")
 }
 
 resource "k8s_manifest" "cluster_role_binding_argocd_server" {
@@ -81,7 +81,7 @@ resource "k8s_manifest" "cluster_role_binding_argocd_server" {
 # Roles
 # ----------------------------------------------------------------------------------------------------------------------
 data "template_file" "role_argocd_application_controller" {
-  template = file("manifests/${var.argo_cd_version}/roles/argocd-application-controller.yml")
+  template = file("${path.module}/manifests/${var.argo_cd_version}/roles/argocd-application-controller.yml")
 }
 
 resource "k8s_manifest" "role_argocd_application_controller" {
@@ -91,7 +91,7 @@ resource "k8s_manifest" "role_argocd_application_controller" {
 }
 
 data "template_file" "role_argocd_dex_server" {
-  template = file("manifests/${var.argo_cd_version}/roles/argocd-dex-server.yml")
+  template = file("${path.module}/manifests/${var.argo_cd_version}/roles/argocd-dex-server.yml")
 }
 
 resource "k8s_manifest" "role_argocd_dex_server" {
@@ -101,7 +101,7 @@ resource "k8s_manifest" "role_argocd_dex_server" {
 }
 
 data "template_file" "role_server_role" {
-  template = file("manifests/${var.argo_cd_version}/roles/server-role.yml")
+  template = file("${path.module}/manifests/${var.argo_cd_version}/roles/server-role.yml")
 }
 
 resource "k8s_manifest" "role_server_role" {
@@ -114,7 +114,7 @@ resource "k8s_manifest" "role_server_role" {
 # Role Bindings
 # ----------------------------------------------------------------------------------------------------------------------
 data "template_file" "role_binding_argocd_application_controller" {
-  template = file("manifests/${var.argo_cd_version}/role-bindings/argocd-application-controller.yml")
+  template = file("${path.module}/manifests/${var.argo_cd_version}/role-bindings/argocd-application-controller.yml")
 }
 
 resource "k8s_manifest" "role_binding_argocd_application_controller" {
@@ -124,7 +124,7 @@ resource "k8s_manifest" "role_binding_argocd_application_controller" {
 }
 
 data "template_file" "role_binding_argocd_dex_server" {
-  template = file("manifests/${var.argo_cd_version}/role-bindings/argocd-dex-server.yml")
+  template = file("${path.module}/manifests/${var.argo_cd_version}/role-bindings/argocd-dex-server.yml")
 }
 
 resource "k8s_manifest" "role_binding_argocd_dex_server" {
@@ -134,7 +134,7 @@ resource "k8s_manifest" "role_binding_argocd_dex_server" {
 }
 
 data "template_file" "role_binding_argocd_server" {
-  template = file("manifests/${var.argo_cd_version}/role-bindings/argocd-server.yml")
+  template = file("${path.module}/manifests/${var.argo_cd_version}/role-bindings/argocd-server.yml")
 }
 
 resource "k8s_manifest" "role_binding_argocd_server" {
@@ -147,7 +147,7 @@ resource "k8s_manifest" "role_binding_argocd_server" {
 # Service Accounts
 # ----------------------------------------------------------------------------------------------------------------------
 data "template_file" "service_account_argocd_application_controller" {
-  template = file("manifests/${var.argo_cd_version}/service-accounts/argocd-application-controller.yml")
+  template = file("${path.module}/manifests/${var.argo_cd_version}/service-accounts/argocd-application-controller.yml")
 }
 
 resource "k8s_manifest" "service_account_argocd_application_controller" {
@@ -157,7 +157,7 @@ resource "k8s_manifest" "service_account_argocd_application_controller" {
 }
 
 data "template_file" "service_account_argocd_dex_server" {
-  template = file("manifests/${var.argo_cd_version}/service-accounts/argocd-dex-server.yml")
+  template = file("${path.module}/manifests/${var.argo_cd_version}/service-accounts/argocd-dex-server.yml")
 }
 
 resource "k8s_manifest" "service_account_argocd_dex_server" {
@@ -167,7 +167,7 @@ resource "k8s_manifest" "service_account_argocd_dex_server" {
 }
 
 data "template_file" "service_account_argocd_server" {
-  template = file("manifests/${var.argo_cd_version}/service-accounts/argocd-server.yml")
+  template = file("${path.module}/manifests/${var.argo_cd_version}/service-accounts/argocd-server.yml")
 }
 
 resource "k8s_manifest" "service_account_argocd_server" {
@@ -180,7 +180,7 @@ resource "k8s_manifest" "service_account_argocd_server" {
 # ConfigMaps
 # ----------------------------------------------------------------------------------------------------------------------
 data "template_file" "configmap_argocd_cm" {
-  template = file("manifests/${var.argo_cd_version}/configmaps/argocd-cm.yml")
+  template = file("${path.module}/manifests/${var.argo_cd_version}/configmaps/argocd-cm.yml")
 }
 
 resource "k8s_manifest" "configmap_argocd_cm" {
@@ -190,7 +190,7 @@ resource "k8s_manifest" "configmap_argocd_cm" {
 }
 
 data "template_file" "configmap_argocd_rbac_cm" {
-  template = file("manifests/${var.argo_cd_version}/configmaps/argocd-rbac-cm.yml")
+  template = file("${path.module}/manifests/${var.argo_cd_version}/configmaps/argocd-rbac-cm.yml")
 }
 
 resource "k8s_manifest" "configmap_argocd_rbac_cm" {
@@ -200,7 +200,7 @@ resource "k8s_manifest" "configmap_argocd_rbac_cm" {
 }
 
 data "template_file" "configmap_argocd_ssh_known_hosts_cm" {
-  template = file("manifests/${var.argo_cd_version}/configmaps/argocd-ssh-known-hosts-cm.yml")
+  template = file("${path.module}/manifests/${var.argo_cd_version}/configmaps/argocd-ssh-known-hosts-cm.yml")
 }
 
 resource "k8s_manifest" "configmap_argocd_ssh_known_hosts_cm" {
@@ -210,7 +210,7 @@ resource "k8s_manifest" "configmap_argocd_ssh_known_hosts_cm" {
 }
 
 data "template_file" "configmap_argocd_tls_certs_cm" {
-  template = file("manifests/${var.argo_cd_version}/configmaps/argocd-tls-certs-cm.yml")
+  template = file("${path.module}/manifests/${var.argo_cd_version}/configmaps/argocd-tls-certs-cm.yml")
 }
 
 resource "k8s_manifest" "configmap_argocd_tls_certs_cm" {
@@ -223,7 +223,7 @@ resource "k8s_manifest" "configmap_argocd_tls_certs_cm" {
 # Secrets
 # ----------------------------------------------------------------------------------------------------------------------
 data "template_file" "secret_argocd_server" {
-  template = file("manifests/${var.argo_cd_version}/secrets/argocd-server.yml")
+  template = file("${path.module}/manifests/${var.argo_cd_version}/secrets/argocd-server.yml")
 }
 
 resource "k8s_manifest" "secret_argocd_server" {
@@ -236,7 +236,7 @@ resource "k8s_manifest" "secret_argocd_server" {
 # Deployments
 # ----------------------------------------------------------------------------------------------------------------------
 data "template_file" "deployment_argocd_application_controller" {
-  template = file("manifests/${var.argo_cd_version}/deployments/argocd-application-controller.yml")
+  template = file("${path.module}/manifests/${var.argo_cd_version}/deployments/argocd-application-controller.yml")
 }
 
 resource "k8s_manifest" "deployment_argocd_application_controller" {
@@ -246,7 +246,7 @@ resource "k8s_manifest" "deployment_argocd_application_controller" {
 }
 
 data "template_file" "deployment_argocd_dex_server" {
-  template = file("manifests/${var.argo_cd_version}/deployments/argocd-dex-server.yml")
+  template = file("${path.module}/manifests/${var.argo_cd_version}/deployments/argocd-dex-server.yml")
 }
 
 resource "k8s_manifest" "deployment_argocd_dex_server" {
@@ -256,7 +256,7 @@ resource "k8s_manifest" "deployment_argocd_dex_server" {
 }
 
 data "template_file" "deployment_argocd_redis" {
-  template = file("manifests/${var.argo_cd_version}/deployments/argocd-redis.yml")
+  template = file("${path.module}/manifests/${var.argo_cd_version}/deployments/argocd-redis.yml")
 }
 
 resource "k8s_manifest" "deployment_argocd_redis" {
@@ -266,7 +266,7 @@ resource "k8s_manifest" "deployment_argocd_redis" {
 }
 
 data "template_file" "deployment_argocd_repo_server" {
-  template = file("manifests/${var.argo_cd_version}/deployments/argocd-repo-server.yml")
+  template = file("${path.module}/manifests/${var.argo_cd_version}/deployments/argocd-repo-server.yml")
 }
 
 resource "k8s_manifest" "deployment_argocd_repo_server" {
@@ -276,7 +276,7 @@ resource "k8s_manifest" "deployment_argocd_repo_server" {
 }
 
 data "template_file" "deployment_argocd_server" {
-  template = file("manifests/${var.argo_cd_version}/deployments/argocd-server.yml")
+  template = file("${path.module}/manifests/${var.argo_cd_version}/deployments/argocd-server.yml")
 }
 
 resource "k8s_manifest" "deployment_argocd_server" {
@@ -289,7 +289,7 @@ resource "k8s_manifest" "deployment_argocd_server" {
 # Services
 # ----------------------------------------------------------------------------------------------------------------------
 data "template_file" "service_argocd_dex_server" {
-  template = file("manifests/${var.argo_cd_version}/services/argocd-dex-server.yml")
+  template = file("${path.module}/manifests/${var.argo_cd_version}/services/argocd-dex-server.yml")
 }
 
 resource "k8s_manifest" "service_argocd_dex_server" {
@@ -299,7 +299,7 @@ resource "k8s_manifest" "service_argocd_dex_server" {
 }
 
 data "template_file" "service_argocd_metrics" {
-  template = file("manifests/${var.argo_cd_version}/services/argocd-metrics.yml")
+  template = file("${path.module}/manifests/${var.argo_cd_version}/services/argocd-metrics.yml")
 }
 
 resource "k8s_manifest" "service_argocd_metrics" {
@@ -309,7 +309,7 @@ resource "k8s_manifest" "service_argocd_metrics" {
 }
 
 data "template_file" "service_argocd_redis" {
-  template = file("manifests/${var.argo_cd_version}/services/argocd-redis.yml")
+  template = file("${path.module}/manifests/${var.argo_cd_version}/services/argocd-redis.yml")
 }
 
 resource "k8s_manifest" "service_argocd_redis" {
@@ -319,7 +319,7 @@ resource "k8s_manifest" "service_argocd_redis" {
 }
 
 data "template_file" "service_argocd_repo_server" {
-  template = file("manifests/${var.argo_cd_version}/services/argocd-repo-server.yml")
+  template = file("${path.module}/manifests/${var.argo_cd_version}/services/argocd-repo-server.yml")
 }
 
 resource "k8s_manifest" "service_argocd_repo_server" {
@@ -329,7 +329,7 @@ resource "k8s_manifest" "service_argocd_repo_server" {
 }
 
 data "template_file" "service_argocd_server" {
-  template = file("manifests/${var.argo_cd_version}/services/argocd-server.yml")
+  template = file("${path.module}/manifests/${var.argo_cd_version}/services/argocd-server.yml")
 }
 
 resource "k8s_manifest" "service_argocd_server" {
@@ -339,7 +339,7 @@ resource "k8s_manifest" "service_argocd_server" {
 }
 
 data "template_file" "service_argocd_server_metrics" {
-  template = file("manifests/${var.argo_cd_version}/services/argocd-server-metrics.yml")
+  template = file("${path.module}/manifests/${var.argo_cd_version}/services/argocd-server-metrics.yml")
 }
 
 resource "k8s_manifest" "service_argocd_server_metrics" {
