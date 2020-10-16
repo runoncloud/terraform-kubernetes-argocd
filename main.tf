@@ -24,6 +24,11 @@ data "http" "install" {
   url = "https://raw.githubusercontent.com/argoproj/argo-cd/v${var.argo_cd_version}/manifests/install.yaml"
 }
 
+data "http" "install_ha" {
+  url = "https://raw.githubusercontent.com/argoproj/argo-cd/v${var.argo_cd_version}/manifests/ha/install.yaml"
+}
+
+
 # ----------------------------------------------------------------------------------------------------------------------
 # Namespaces
 # ----------------------------------------------------------------------------------------------------------------------
@@ -37,7 +42,7 @@ resource "kubernetes_namespace" "argo" {
 # ArgoCD Resources
 # ----------------------------------------------------------------------------------------------------------------------
 locals {
-  resources = split("\n---\n", data.http.install.body)
+  resources = split("\n---\n", var.ha ? data.http.install_ha.body : data.http.install.body)
 }
 
 resource "k8s_manifest" "resource" {

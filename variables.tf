@@ -9,3 +9,9 @@ variable "namespace" {
   type        = string
   default     = "argocd"
 }
+
+variable "ha" {
+  description = "True if the HA version of ArgoCD should be installed."
+  type        = bool
+  default     = false
+}
