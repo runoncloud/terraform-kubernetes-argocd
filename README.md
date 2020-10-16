@@ -6,7 +6,7 @@ This modules makes it easy to set up a fresh installation of Argo CD in your Kub
 
 This module is meant for use with Terraform >= 0.13.0 If you haven't [upgraded](https://www.terraform.io/upgrade-guides/0-13.html).
 
-If you want to use Terraform 0.12, use the tag v.1.0.0. Note that the version v.1.0.0 only support ArgoCD 1.5.5 while v1.1+ work with all versions of ArgoCD.
+If you want to use Terraform 0.12, use the tag v.1.0.0. Note that the version v.1.0.0 only support ArgoCD 1.5.5 while v1.1+ works with all versions of ArgoCD.
 
 ## Dependencies
 This module use the [k8s Terraform provider](https://github.com/banzaicloud/terraform-provider-k8s) from Banzai Cloud to manages Kubernetes manifests
