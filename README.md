@@ -13,7 +13,7 @@ This module use the [k8s Terraform provider](https://github.com/banzaicloud/terr
 . See the [documentation](https://github.com/banzaicloud/terraform-provider-k8s#installation) to see how to install it.
 
 ## Usage
-You can go to the examples folder, however the usage of the module could be like this in your own `main.tf` file:
+See the examples folder : 
 
 ```hcl
 module "argo_cd" {
