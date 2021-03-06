@@ -6,5 +6,5 @@ module "argo_cd" {
   source = "../../"
 
   namespace       = "argocd"
-  argo_cd_version = "1.7.8"
+  argo_cd_version = "1.8.7"
 }
