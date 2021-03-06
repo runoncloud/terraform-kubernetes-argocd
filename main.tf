@@ -48,6 +48,11 @@ locals {
 resource "k8s_manifest" "resource" {
   count = length(local.resources)
 
+  timeouts  {
+    create = "5m"
+    delete = "5m"
+  }
+  
   namespace = var.namespace
   content   = local.resources[count.index]
 
