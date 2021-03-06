@@ -1,7 +1,7 @@
 variable "argo_cd_version" {
   description = "The version of Argo CD."
   type        = string
-  default     = "1.5.5"
+  default     = "1.7.8"
 }
 
 variable "namespace" {
